@@ -9,8 +9,6 @@ async function getUsers() {
         const users = await fetch("https://json.medrating.org/users")
         const response = await users.json()
         
-        console.log("users", response);
-        
         return response
     } catch(e) {
         console.error(e)
@@ -21,8 +19,6 @@ async function getAlbums(userId) {
     try {    
         const users = await fetch(`https://json.medrating.org/albums?userId=${userId}`)
         const response = await users.json()
-        
-        console.log("albums", response);
 
         return response
     } catch(e) {
@@ -34,8 +30,6 @@ async function getPhotos(albumId) {
     try {    
         const users = await fetch(`https://json.medrating.org/photos?albumId=${albumId}`)
         const response = await users.json()
-        
-        console.log("photos", response);
 
         return response
     } catch(e) {
@@ -162,15 +156,10 @@ function openAlbum(albumId, albumDiv) {
 // Статус избранного
 function toggleFavorites(photoTitle, photoUrl, event) {
         event.target.classList.toggle("active")
-        console.log("here")
         
         if (localStorage.getItem(`${photoUrl}`) == null) {
-        console.log("add")
-
             localStorage.setItem(photoUrl, photoTitle)
         } else {
-        console.log("delete")
-
             localStorage.removeItem(`${photoUrl}`)
         }
 }
@@ -236,8 +225,6 @@ function loadFavorite() {
     for (let i = 0; i < lsLength; i++) {
         const url = localStorage.key(i)
         const title = localStorage.getItem(url)
-        
-        console.log(title, url);
 
         const photoRow = document.createElement("div")
         const photoFavorites = document.createElement("button")
