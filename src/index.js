@@ -54,7 +54,7 @@ function loadNames() {
         const userDiv = document.createElement("div")
         const userBtn = document.createElement("button")
 
-        userDiv.className = "main__user main__user__div"
+        userDiv.className = "main__user main__user__div arrow"
         userBtn.className = "main__user main__user__btn"
         userBtn.innerText = `${usersList[i].name}`
 
@@ -66,12 +66,13 @@ function loadNames() {
 }
 
 // Открытие пользователя и агрузка альбомов
-function openUser(userId, userDiv) {
+function openUser(userId, userDiv) { // можно и ...args
     let showAlbums = true // показывает открыт ли альбом
 
     async function fn(id, node) { 
         const userDiv = node
- 
+        
+        userDiv.classList.toggle("arrow-down")
         showAlbums = !showAlbums
         if (showAlbums === true) {
             const albumsDivs = userDiv.querySelectorAll(".main__albums__div")
@@ -82,15 +83,15 @@ function openUser(userId, userDiv) {
 
             return
         }
-
-        const albums = await getAlbums(id) // получаем список альбомов по id               
+        
+        const albums = await getAlbums(id) // получаем список альбомов по id
         const albumsLength = albums.length 
 
         for (let i = 0; i < albumsLength; i++) {
             const albumsDiv = document.createElement("div")
             const albumsBtn = document.createElement("button")
             
-            albumsDiv.className = "main__albums main__albums__div"
+            albumsDiv.className = "main__albums main__albums__div arrow"
             albumsBtn.className = "main__albums main__albums__btn"
             albumsBtn.innerText = `${albums[i].title}`
 
@@ -111,6 +112,7 @@ function openAlbum(albumId, albumDiv) {
     async function fn(id, node) {
         const albumDiv = node
 
+        albumDiv.classList.toggle("arrow-down")
         showPhotos = !showPhotos
         if (showPhotos === true) {
             const photosDivs = albumDiv.querySelectorAll(".main__photos__div")

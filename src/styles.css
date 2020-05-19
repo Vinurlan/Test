@@ -46,6 +46,14 @@ body {
     background-color: rgba(5, 5, 5, 0.336);
 }
 
-.madal__img {
+.arrow::before, .arrow-down::before {
+    color: rgb(97, 97, 97);
+}
 
+.arrow::before {
+    content: "►";
+}
+
+.arrow-down::before {
+    content: "▼";
 }
