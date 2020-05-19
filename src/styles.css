@@ -1,0 +1,51 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.main__user, .main__albums, .main__photos {
+    margin-left: 20px;
+}
+
+.main__photos__div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 10px;
+}
+
+.main__photos__favorites {
+    background: none;
+    font-size: 20pt;
+    border: none;
+    color: #888;
+}
+
+.main__photos__img {
+    width: 150px;
+    height: 150px;
+    background: rgb(177, 165, 165);
+}
+
+.active {
+    color: rgb(221, 221, 12);
+}
+
+.madal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(5, 5, 5, 0.336);
+}
+
+.madal__img {
+
+}
