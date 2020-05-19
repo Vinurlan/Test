@@ -198,6 +198,9 @@ function openImage(photoUrl) {
 
     catalogNav.addEventListener("click", (e) => {
         e.preventDefault()
+        if (mainCatalog.hidden == false) {
+            return
+        }
 
         clearFavorite()
 
@@ -207,7 +210,10 @@ function openImage(photoUrl) {
 
     favoritesNav.addEventListener("click", (e) => {
         e.preventDefault()
-
+        if (mainFavorites.hidden == false) {
+            return
+        }
+        
         loadFavorite()
 
         mainCatalog.hidden = true
@@ -249,8 +255,9 @@ function loadFavorite() {
 }
 
 function clearFavorite() {
-    const favoritesList = favorites.children
+    const favoritesList = favorites.querySelectorAll(".favorites__row")
     const listLength = favoritesList.length
+    
     for (let i = 0; i < listLength; i++) {
         favoritesList[i].remove()
     }
