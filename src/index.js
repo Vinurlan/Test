@@ -55,7 +55,7 @@ function loadNames() {
         const userBtn = document.createElement("button")
 
         userDiv.className = "main__user main__user__div arrow"
-        userBtn.className = "main__user main__user__btn"
+        userBtn.className = "main__user main__user__btn main__list__btn"
         userBtn.innerText = `${usersList[i].name}`
 
         catalog.append(userDiv)
@@ -92,7 +92,7 @@ function openUser(userId, userDiv) { // можно и ...args
             const albumsBtn = document.createElement("button")
             
             albumsDiv.className = "main__albums main__albums__div arrow"
-            albumsBtn.className = "main__albums main__albums__btn"
+            albumsBtn.className = "main__albums main__albums__btn main__list__btn"
             albumsBtn.innerText = `${albums[i].title}`
 
             userDiv.append(albumsDiv)
@@ -126,18 +126,22 @@ function openAlbum(albumId, albumDiv) {
 
         const photos = await getPhotos(id) // получаем список альбомов по id
         const photosLength = photos.length
+        
 
         for (let i = 0; i < photosLength; i++) {
             const photosDiv = document.createElement("div")
             const photosFavorites = document.createElement("button")
-            const photosImg = document.createElement("div")
+            const photosImg = document.createElement("img")
 
             photosDiv.className = "main__photos main__photos__div"
             photosFavorites.className = "main__photos main__photos__favorites"
             photosImg.className = "main__photos main__photos__img"
 
             photosFavorites.innerHTML = "&#9733;"
+
             photosImg.setAttribute("title", photos[i].title)
+            photosImg.setAttribute("src", photos[i].thumbnailUrl)
+
 
             if (localStorage.getItem(`${photos[i].url}`)) { // делаем звёздочку активной если фото в избранном
                 photosFavorites.classList.add("active")
@@ -147,7 +151,12 @@ function openAlbum(albumId, albumDiv) {
             photosDiv.append(photosFavorites)
             photosDiv.append(photosImg)
 
-            photosFavorites.addEventListener("click", toggleFavorites.bind(this, photos[i].title, photos[i].url))
+            photosFavorites.addEventListener("click", toggleFavorites.bind(
+                this,
+                photos[i].id,
+                photos[i].thumbnailUrl,
+                photos[i].title,
+                photos[i].url))
             photosImg.addEventListener("click", openImage.bind(this, photos[i].url))
         }
     }
@@ -156,13 +165,13 @@ function openAlbum(albumId, albumDiv) {
 }
 
 // Статус избранного
-function toggleFavorites(photoTitle, photoUrl, event) {
+function toggleFavorites(photoId, photoTUrl, photoTitle, photoUrl, event) {   
         event.target.classList.toggle("active")
         
-        if (localStorage.getItem(`${photoUrl}`) == null) {
-            localStorage.setItem(photoUrl, photoTitle)
+        if (localStorage.getItem(`photoId=${photoId}`) == null) {
+            localStorage.setItem(`photoId=${photoId}`, `title=${photoTitle};turl=${photoTUrl};url=${photoUrl};`)
         } else {
-            localStorage.removeItem(`${photoUrl}`)
+            localStorage.removeItem(`photoId=${photoId}`)
         }
 }
 
@@ -179,10 +188,10 @@ function openImage(photoUrl) {
     image.className = "madal__img"
 
     btnCloseMadal.innerHTML = "&times;"
+
     image.setAttribute("src", photoUrl)
 
     document.body.append(bgMadal)
-    // bgMadal.append(madal)
     bgMadal.append(image)
     bgMadal.append(btnCloseMadal)
 
@@ -205,9 +214,14 @@ function openImage(photoUrl) {
         }
 
         clearFavorite()
+        setTimeout(() => {
 
-        mainCatalog.hidden = false
-        mainFavorites.hidden = true
+            // чуть косметики
+            anim(catalogNav, favoritesNav)
+
+            mainCatalog.hidden = false
+            mainFavorites.hidden = true
+        }, 100)
     })
 
     favoritesNav.addEventListener("click", (e) => {
@@ -215,11 +229,15 @@ function openImage(photoUrl) {
         if (mainFavorites.hidden == false) {
             return
         }
-        
-        loadFavorite()
 
-        mainCatalog.hidden = true
-        mainFavorites.hidden = false
+        loadFavorite()        
+        setTimeout(() => {
+
+            anim(catalogNav, favoritesNav)
+
+            mainCatalog.hidden = true
+            mainFavorites.hidden = false
+        }, 100)
     })
 })() // почему бы и нет :)
 
@@ -231,27 +249,34 @@ function loadFavorite() {
     }
 
     for (let i = 0; i < lsLength; i++) {
-        const url = localStorage.key(i)
-        const title = localStorage.getItem(url)
+        const key = localStorage.key(i)
+        const id = key.match(/\d+/)[0]
+        const url = localStorage.getItem(key).match(/[^\w](url=).*?\;/)[0].replace(/(;)?(url=)?/g, '')
+        const turl = localStorage.getItem(key).match(/[^\w](turl=).*?\;/)[0].replace(/(;)?(turl=)?/g, '')
+        const title = localStorage.getItem(key).match(/(title=).*?\;/)[0].replace(/(;)?(title=)?/g, '')
 
         const photoRow = document.createElement("div")
         const photoFavorites = document.createElement("button")
-        const photoImg = document.createElement("div")
+        const photoImg = document.createElement("img")
         const photoTitle = document.createElement("div")
 
         photoRow.className = "main__favorites favorites__row"
         photoFavorites.className = "main__favorites main__photos__favorites active"
         photoImg.className = "main__favorites main__photos__img"
+        photoTitle.className = "main__favorites main__photos__title"
 
         photoFavorites.innerHTML = "&#9733;"
         photoTitle.innerText = title
+
+        photoImg.setAttribute("src", turl)
         
         favorites.append(photoRow)
         photoRow.append(photoFavorites)
         photoRow.append(photoImg)
         photoRow.append(photoTitle)
+
         
-        photoFavorites.addEventListener("click", toggleFavorites.bind(this, title, url))
+        photoFavorites.addEventListener("click", toggleFavorites.bind(this, id, turl, title, url))
         photoImg.addEventListener("click", openImage.bind(this, url))
     }
 }
@@ -263,4 +288,12 @@ function clearFavorite() {
     for (let i = 0; i < listLength; i++) {
         favoritesList[i].remove()
     }
+}
+
+// Немного косметики 
+function anim(catalog, favorites) {
+    catalog.classList.toggle("nav-active")
+    favorites.classList.toggle("nav-active")
+
+    
 }
