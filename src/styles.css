@@ -42,9 +42,10 @@ body {
 }
 
 .main__catalog {
-    -webkit-animation: appearanceCatalog .5s ease-out 0s normal;
-    -moz-animation: appearanceCatalog .5s ease-out 0s normal;;
-    animation: appearanceCatalog .5s ease-out 0s normal;
+    -webkit-animation: appearanceCatalog .5s ease-out 1 normal;
+    -moz-animation: appearanceCatalog .5s ease-out 1 normal;;
+    animation: appearanceCatalog .5s ease-out 1 normal;
+    animation-fill-mode: forwards;
 }
 
 .main__user, .main__albums, .main__photos {
@@ -105,12 +106,11 @@ body {
 }
 
 .main__favorites {
-    margin-left: 10px;
-    -webkit-animation: appearanceFavorites .5s ease-out 0s normal;
-    -moz-animation: appearanceFavorites .5s ease-out 0s normal;;
-    animation: appearanceFavorites .5s ease-out 0s normal;
+    -webkit-animation: appearanceFavorites .5s ease-out 1 normal;
+    -moz-animation: appearanceFavorites .5s ease-out 1 normal;;
+    animation: appearanceFavorites .5s ease-out 1 normal;
+    animation-fill-mode: forwards;
 }
-
 
 .favorites__row {
     margin: 30px 10px;
@@ -125,9 +125,17 @@ body {
         opacity: 0;
         transform: translate(-50px);
     }
-    100.0%{
+    45.0%{
         opacity: 1;
         transform: translate(0);
+    }
+    55.0%{
+        opacity: 1;
+        transform: translate(0);
+    }
+    100.0%{
+        opacity: 0;
+        transform: translate(-50px);
     }
 }
 
@@ -136,8 +144,16 @@ body {
         opacity: 0;
         transform: translate(50px);
     }
-    100.0%{
+    45.0%{
         opacity: 1;
         transform: translate(0);
+    }
+    55.0%{
+        opacity: 1;
+        transform: translate(0);
+    }
+    100.0%{
+        opacity: 0;
+        transform: translate(50px);
     }
 }
