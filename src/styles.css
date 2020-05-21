@@ -27,7 +27,8 @@ body {
     font-family: sans-serif;
     padding: 10px 10px;
     margin: 0;
-    transition: color .2s;
+    transition: background-color .2s;
+    border-radius: 5px;
 }
 .header__link:hover {
     background-color: rgb(240, 241, 255);
@@ -55,6 +56,7 @@ body {
 .main__list__btn {
     background: none;
     border: none;
+    
 }
 .main__list__btn:hover {
     background: rgb(240, 241, 255);
@@ -80,6 +82,14 @@ body {
     background: rgb(177, 165, 165);
 }
 
+.main__photos__title {
+    margin: 0 20px;
+    padding: 10px;
+    width: 100%;
+    background-color: rgb(240, 241, 255);
+    font-family: sans-serif;
+}
+
 .active {
     color: rgb(221, 221, 12);
 }
@@ -91,6 +101,28 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(5, 5, 5, 0.336);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.madal__btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 30pt;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    transition: color .2s;
+}
+
+.madal__btn:hover {
+    color: red;
 }
 
 .arrow::before, .arrow-down::before {

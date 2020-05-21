@@ -195,6 +195,7 @@ function openImage(photoUrl) {
     bgMadal.append(image)
     bgMadal.append(btnCloseMadal)
 
+    // Закрытие окна
     btnCloseMadal.addEventListener("click", () => {
         bgMadal.remove()
     })
