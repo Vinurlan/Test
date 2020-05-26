@@ -143,7 +143,7 @@ function openAlbum(albumId, albumDiv) {
             photosImg.setAttribute("src", photos[i].thumbnailUrl)
 
 
-            if (localStorage.getItem(`${photos[i].url}`)) { // делаем звёздочку активной если фото в избранном
+            if (localStorage.getItem(`photoId=${photos[i].id}`)) { // делаем звёздочку активной если фото в избранном
                 photosFavorites.classList.add("active")
             }
 
