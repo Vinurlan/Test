@@ -143,7 +143,7 @@ function openAlbum(albumId, albumDiv) {
             photosImg.setAttribute("src", photos[i].thumbnailUrl)
 
 
-            if (localStorage.getItem(`${photos[i].url}`)) { // делаем звёздочку активной если фото в избранном
+            if (localStorage.getItem(`photoId=${photos[i].id}`)) { // делаем звёздочку активной если фото в избранном
                 photosFavorites.classList.add("active")
             }
 
@@ -195,49 +195,71 @@ function openImage(photoUrl) {
     bgMadal.append(image)
     bgMadal.append(btnCloseMadal)
 
+    // Закрытие окна
     btnCloseMadal.addEventListener("click", () => {
         bgMadal.remove()
     })
 }
 
-// Настройка навигации
+// Настройка навигации и анимации перехода
 (function handlerNav() {
     const catalogNav = document.querySelector(".header__link__catalog")
     const favoritesNav = document.querySelector(".header__link__favorites")
-    const mainCatalog = document.querySelector(".main__catalog")
-    const mainFavorites = document.querySelector(".main__favorites")
+
+    const activeNav = document.querySelector(".nav-active")
+    if (activeNav == catalogNav) {
+        setTimeout(() => {
+            catalog.style = "animation-play-state: paused"
+        }, 250)
+    } else if (activeNav == favoritesNav) {
+        setTimeout(() => {
+            favorites.style = "animation-play-state: paused"
+        }, 250)
+    }
+
+    
 
     catalogNav.addEventListener("click", (e) => {
         e.preventDefault()
-        if (mainCatalog.hidden == false) {
+        if (catalog.hidden == false) {
             return
         }
 
-        clearFavorite()
+        anim(catalogNav, favoritesNav)
+
+        favorites.style = "animation-play-state: running;" 
         setTimeout(() => {
+            catalog.hidden = false
+            favorites.hidden = true
 
-            // чуть косметики
-            anim(catalogNav, favoritesNav)
-
-            mainCatalog.hidden = false
-            mainFavorites.hidden = true
-        }, 100)
+            clearFavorite()
+            
+            setTimeout(() => {
+            favorites.style = ""
+                catalog.style = "animation-play-state: paused;"
+            }, 250)
+        }, 250)
     })
 
     favoritesNav.addEventListener("click", (e) => {
         e.preventDefault()
-        if (mainFavorites.hidden == false) {
+        if (favorites.hidden == false) {
             return
         }
 
-        loadFavorite()        
+        loadFavorite()
+        anim(catalogNav, favoritesNav)
+
+        catalog.style = "animation-play-state: running;" 
         setTimeout(() => {
+            catalog.hidden = true
+            favorites.hidden = false
 
-            anim(catalogNav, favoritesNav)
-
-            mainCatalog.hidden = true
-            mainFavorites.hidden = false
-        }, 100)
+            setTimeout(() => {
+                catalog.style = ""
+                favorites.style = "animation-play-state: paused;"
+            }, 250)
+        }, 250)
     })
 })() // почему бы и нет :)
 
@@ -260,10 +282,10 @@ function loadFavorite() {
         const photoImg = document.createElement("img")
         const photoTitle = document.createElement("div")
 
-        photoRow.className = "main__favorites favorites__row"
-        photoFavorites.className = "main__favorites main__photos__favorites active"
-        photoImg.className = "main__favorites main__photos__img"
-        photoTitle.className = "main__favorites main__photos__title"
+        photoRow.className = "favorites__row"
+        photoFavorites.className = "main__photos__favorites active"
+        photoImg.className = "main__photos__img"
+        photoTitle.className = "main__photos__title"
 
         photoFavorites.innerHTML = "&#9733;"
         photoTitle.innerText = title
@@ -294,6 +316,4 @@ function clearFavorite() {
 function anim(catalog, favorites) {
     catalog.classList.toggle("nav-active")
     favorites.classList.toggle("nav-active")
-
-    
 }
