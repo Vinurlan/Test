@@ -47,9 +47,8 @@ async function getPhotos(albumId) {
 
 // Построение списка имён
 function loadNames() {
-    const usersListLength = usersList.length
 
-    for (let i = 0; i < usersListLength; i++) { // можно и forEach по usersList
+    for (let i = 0; i < usersList.length; i++) { // можно и forEach по usersList
         const userDiv = document.createElement("div")
         const userBtn = document.createElement("button")
 
@@ -82,9 +81,8 @@ function openUser(userId, userDiv) { // можно и ...args
         }
         
         const albums = await getAlbums(userId) // получаем список альбомов по id
-        const albumsLength = albums.length 
 
-        for (let i = 0; i < albumsLength; i++) {
+        for (let i = 0; i < albums.length ; i++) {
             const albumsDiv = document.createElement("div")
             const albumsBtn = document.createElement("button")
             
@@ -120,10 +118,8 @@ function openAlbum(albumId, albumDiv) {
         }
 
         const photos = await getPhotos(albumId) // получаем список альбомов по id
-        const photosLength = photos.length
-        
 
-        for (let i = 0; i < photosLength; i++) {
+        for (let i = 0; i < photos.length; i++) {
             const photosDiv = document.createElement("div")
             const photosFavorites = document.createElement("button")
             const photosImg = document.createElement("img")
@@ -294,9 +290,8 @@ function loadFavorite() {
 
 function clearFavorite() {
     const favoritesList = favorites.querySelectorAll(".favorites__row")
-    const listLength = favoritesList.length
     
-    for (let i = 0; i < listLength; i++) {
+    for (let i = 0; i < favoritesList.length; i++) {
         favoritesList[i].remove()
     }
 }
