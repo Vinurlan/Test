@@ -39,24 +39,23 @@ async function getPhotos(albumId) {
 //------------
 
 // Загрузка данных в переменные
-async function getData() {
+(async function getData() {
     usersList = await getUsers()
 
     loadNames()
-}
-getData()
+})()
 
 // Построение списка имён
 function loadNames() {
     const usersListLength = usersList.length
-    
+
     for (let i = 0; i < usersListLength; i++) { // можно и forEach по usersList
         const userDiv = document.createElement("div")
         const userBtn = document.createElement("button")
 
         userDiv.className = "main__user main__user__div arrow"
         userBtn.className = "main__user main__user__btn main__list__btn"
-        userBtn.innerText = `${usersList[i].name}`
+        userBtn.innerText = usersList[i].name
 
         catalog.append(userDiv)
         userDiv.append(userBtn)
@@ -69,9 +68,7 @@ function loadNames() {
 function openUser(userId, userDiv) { // можно и ...args
     let showAlbums = true // показывает открыт ли альбом
 
-    async function fn(id, node) { 
-        const userDiv = node
-        
+    async function fn() {    
         userDiv.classList.toggle("arrow-down")
         showAlbums = !showAlbums
         if (showAlbums === true) {
@@ -84,7 +81,7 @@ function openUser(userId, userDiv) { // можно и ...args
             return
         }
         
-        const albums = await getAlbums(id) // получаем список альбомов по id
+        const albums = await getAlbums(userId) // получаем список альбомов по id
         const albumsLength = albums.length 
 
         for (let i = 0; i < albumsLength; i++) {
@@ -93,7 +90,7 @@ function openUser(userId, userDiv) { // можно и ...args
             
             albumsDiv.className = "main__albums main__albums__div arrow"
             albumsBtn.className = "main__albums main__albums__btn main__list__btn"
-            albumsBtn.innerText = `${albums[i].title}`
+            albumsBtn.innerText = albums[i].title
 
             userDiv.append(albumsDiv)
             albumsDiv.append(albumsBtn)
@@ -102,16 +99,14 @@ function openUser(userId, userDiv) { // можно и ...args
         }
     }
 
-    return fn.bind(this, ...arguments)
+    return fn
 }
 
 // Открытие альбома и загрузка фото
 function openAlbum(albumId, albumDiv) {
-    let showPhotos = true    
+    let showPhotos = true
 
-    async function fn(id, node) {
-        const albumDiv = node
-
+    async function fn() {
         albumDiv.classList.toggle("arrow-down")
         showPhotos = !showPhotos
         if (showPhotos === true) {
@@ -124,7 +119,7 @@ function openAlbum(albumId, albumDiv) {
             return
         }
 
-        const photos = await getPhotos(id) // получаем список альбомов по id
+        const photos = await getPhotos(albumId) // получаем список альбомов по id
         const photosLength = photos.length
         
 
@@ -151,28 +146,23 @@ function openAlbum(albumId, albumDiv) {
             photosDiv.append(photosFavorites)
             photosDiv.append(photosImg)
 
-            photosFavorites.addEventListener("click", toggleFavorites.bind(
-                this,
-                photos[i].id,
-                photos[i].thumbnailUrl,
-                photos[i].title,
-                photos[i].url))
+            photosFavorites.addEventListener("click", toggleFavorites.bind(this, photos[i]))
             photosImg.addEventListener("click", openImage.bind(this, photos[i].url))
         }
     }
 
-    return fn.bind(this, ...arguments)
+    return fn
 }
 
 // Статус избранного
-function toggleFavorites(photoId, photoTUrl, photoTitle, photoUrl, event) {   
-        event.target.classList.toggle("active")
-        
-        if (localStorage.getItem(`photoId=${photoId}`) == null) {
-            localStorage.setItem(`photoId=${photoId}`, `title=${photoTitle};turl=${photoTUrl};url=${photoUrl};`)
-        } else {
-            localStorage.removeItem(`photoId=${photoId}`)
-        }
+function toggleFavorites(photo, event) {   
+    event.target.classList.toggle("active")
+    
+    if (localStorage.getItem(`photoId=${photo.id}`) == null) {
+        localStorage.setItem(`photoId=${photo.id}`, `${JSON.stringify(photo)}`)
+    } else {
+        localStorage.removeItem(`photoId=${photo.id}`)
+    }
 }
 
 // Открытие изображения
@@ -266,16 +256,16 @@ function openImage(photoUrl) {
 // Загрузка избранных фото
 function loadFavorite() {
     const lsLength = localStorage.length
+    
     if (!lsLength) {
         return
     }
 
     for (let i = 0; i < lsLength; i++) {
         const key = localStorage.key(i)
-        const id = key.match(/\d+/)[0]
-        const url = localStorage.getItem(key).match(/[^\w](url=).*?\;/)[0].replace(/(;)?(url=)?/g, '')
-        const turl = localStorage.getItem(key).match(/[^\w](turl=).*?\;/)[0].replace(/(;)?(turl=)?/g, '')
-        const title = localStorage.getItem(key).match(/(title=).*?\;/)[0].replace(/(;)?(title=)?/g, '')
+        if (key.replace(/=\d+/, '') != 'photoId') continue
+
+        const photo = JSON.parse(localStorage.getItem(key))
 
         const photoRow = document.createElement("div")
         const photoFavorites = document.createElement("button")
@@ -288,18 +278,17 @@ function loadFavorite() {
         photoTitle.className = "main__photos__title"
 
         photoFavorites.innerHTML = "&#9733;"
-        photoTitle.innerText = title
+        photoTitle.innerText = photo.title
 
-        photoImg.setAttribute("src", turl)
+        photoImg.setAttribute("src", photo.thumbnailUrl)
         
         favorites.append(photoRow)
         photoRow.append(photoFavorites)
         photoRow.append(photoImg)
         photoRow.append(photoTitle)
 
-        
-        photoFavorites.addEventListener("click", toggleFavorites.bind(this, id, turl, title, url))
-        photoImg.addEventListener("click", openImage.bind(this, url))
+        photoFavorites.addEventListener("click", toggleFavorites.bind(this, photo))
+        photoImg.addEventListener("click", openImage.bind(this, photo.url))
     }
 }
 
