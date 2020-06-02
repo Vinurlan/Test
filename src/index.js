@@ -305,4 +305,4 @@ function clearFavorite() {
 function anim(catalog, favorites) {
     catalog.classList.toggle("nav-active")
     favorites.classList.toggle("nav-active")
-}
+} 
